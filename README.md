@@ -2,46 +2,65 @@
 This application uses the following to create a few 
 ReST services:
 * Spring Boot
-* H2 database (file mode)
 * Jetty
-* JDBC
+* JDBC (for comparision with JPA with Spring Repository)
+* JPA / Hibernate
+* Spring Repository
 
 ## Initialization
 You need to load the database schema and some data
-into the database first. You just uncomment the following lines
-in application.properties:
-spring.datasource.schema=db.sql
-spring.datasource.data=dbData.sql
-spring.datasource.initialize=true
+into the database first. resources/db.sql contains the database specification, 
+and resources / dbData.sql contains the example data. You need to specify
+database URL in application.properties; by default we hae MySQL / MariaDB running 
+on localhost in default port. You need to change this for other databases.
 
-After initial startup you need to comment the lines again 
-in order to avoid duplicating data.
-
-If this does not work, you can enter H2 admin UI and do schema
-creation and data loading manually:
-http://localhost:8080/h2
-
-JDBC URL can be found in application.properties.
-
-We could utilize Liquibase to make this smoother, but we'll save
-that for later.
-
-The scheme is the "classicmodels" sample database from mysqltutorial:
+The database schema is the "classicmodels" sample database from mysqltutorial:
 http://www.mysqltutorial.org/mysql-sample-database.aspx
 
 ## Features
 ### Greeting ReST 
 A very basic Rest Service to test that things are set up properly.
 You can give "name" parameter, and get a JSON reply.
-
+```
 http://localhost:8080/greeting?name=Riku 
 {"id":1,"content":"Hello, Riku!"}
-### Employee ReST
-Searches employee table by last name, using SQL LIKE '%name%'
-search, with Spring JdbcTemplate.
+```
 
-http://localhost:8080/employees?lastNameBeginsWith=J
-[
-  {"employeeNumber":1165,"lastName":"Jennings","firstName":"Leslie","extension":"x3291","emailAddress":"ljennings@classicmodelcars.com","officeCode":"1","reportsTo":1143,"jobTitle":"Sales Rep"},
-  {"employeeNumber":1504,"lastName":"Jones","firstName":"Barry","extension":"x102","emailAddress":"bjones@classicmodelcars.com","officeCode":"7","reportsTo":1102,"jobTitle":"Sales Rep"}
-]
+### Employees by last name ReST (Using DAO and JdbcTemplate)
+Searches employee table by last name, using SQL lastName LIKE '<lastName>%' query
+search, with Spring JdbcTemplate.
+```
+curl http://localhost:8080/employees?lastNameBeginsWith=J
+[{"employeeNumber":1165,"lastName":"Jennings","firstName":"Leslie","extension":"x3291","emailAddress":"ljennings@classicmodelcars.com","officeCode":"1","reportsTo":1143,"jobTitle":"Sales Rep"},
+{"employeeNumber":1504,"lastName":"Jones","firstName":"Barry","extension":"x102","emailAddress":"bjones@classicmodelcars.com","officeCode":"7","reportsTo":1102,"jobTitle":"Sales Rep"}]
+```
+
+### Employees by last name ReST (Using Spring Repository)
+Searches employee table by last name, using Spring Repository query. Note that the query is ordered,
+and the previous one was not.
+```
+http://localhost:8080/employees/bylastname?beginsWith=J
+[{"employeeNumber":1504,"lastName":"Jones","firstName":"Barry","extension":"x102","emailAddress":"bjones@classicmodelcars.com","officeCode":"7","reportsTo":1102,"jobTitle":"Sales Rep"},
+{"employeeNumber":1165,"lastName":"Jennings","firstName":"Leslie","extension":"x3291","emailAddress":"ljennings@classicmodelcars.com","officeCode":"1","reportsTo":1143,"jobTitle":"Sales Rep"}]
+```
+
+### Employees by last name ReST (Using Spring Repository)
+Searches employee table by first name, using Spring Repository query.
+```
+curl "http://localhost:8080/employees/byfirstname?beginsWith=P"
+[{"employeeNumber":1612,"lastName":"Marsh","firstName":"Peter","extension":"x102","email":"pmarsh@classicmodelcars.com","jobTitle":"Sales Rep"},{"employeeNumber":1401,"lastName":"Castillo","firstName":"Pamela","extension":"x2759","email":"pcastillo@classicmodelcars.com","jobTitle":"Sales Rep"}]
+```
+
+### Employees by last name and first name ReST (Using Spring Repository)
+Searches employee table by last name and first name, using Spring Repository query.
+```
+curl "http://localhost:8080/employees/bylast-and-firstname?lastNameBeginsWith=J&firstNameBeginsWith=Ba"
+[{"employeeNumber":1504,"lastName":"Jones","firstName":"Barry","extension":"x102","email":"bjones@classicmodelcars.com","jobTitle":"Sales Rep"}]
+```
+
+### Employees by name - can use last name and/or first name
+Combines the previous three searches using Spring Repository queries
+```
+curl "http://localhost:8080/employees/byname?lastName=J&firstName=Ba"
+[{"employeeNumber":1504,"lastName":"Jones","firstName":"Barry","extension":"x102","email":"bjones@classicmodelcars.com","jobTitle":"Sales Rep"}]
+```

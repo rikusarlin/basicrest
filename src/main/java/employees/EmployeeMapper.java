@@ -6,10 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class EmployeeMapper implements RowMapper<Employee> {
+public class EmployeeMapper implements RowMapper<EmployeeEntity> {
 
-    public Employee mapRow(ResultSet rs, int rowNum) throws SQLException{
-        Employee emp = new Employee();
+    public EmployeeEntity mapRow(ResultSet rs, int rowNum) throws SQLException{
+        EmployeeEntity emp = new EmployeeEntity();
         emp.setEmailAddress(rs.getString("EMAIL"));
         emp.setEmployeeNumber(rs.getLong("EMPLOYEENUMBER"));
         emp.setExtension(rs.getString("EXTENSION"));

@@ -17,7 +17,7 @@ public class EmployeeDAO {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<Employee> findByLastName(String lastName){
+    public List<EmployeeEntity> findByLastName(String lastName){
         String [] params = new String[1];
         params[0] = lastName + "%";
         return this.jdbcTemplate.query(

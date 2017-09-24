@@ -1,6 +1,6 @@
 package employees;
 
-public class Employee {
+public class EmployeeEntity {
     Long employeeNumber;
     String lastName;
     String firstName;
