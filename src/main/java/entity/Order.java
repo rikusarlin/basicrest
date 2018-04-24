@@ -7,7 +7,7 @@ import java.sql.Date;
  * Created by sarlirik on 23/09/17.
  */
 @Entity
-@Table(name = "orders", schema = "classicmodels", catalog = "")
+@Table(name = "orders", catalog = "")
 public class Order {
     private int orderNumber;
     private Date orderDate;

@@ -6,13 +6,10 @@ ReST services:
 * JDBC (for comparision with JPA with Spring Repository)
 * JPA / Hibernate
 * Spring Repository
+* H2 in-memory database
 
 ## Initialization
-You need to load the database schema and some data
-into the database first. resources/db.sql contains the database specification, 
-and resources / dbData.sql contains the example data. You need to specify
-database URL in application.properties; by default we hae MySQL / MariaDB running 
-on localhost in default port. You need to change this for other databases.
+Not needed. Just compile and run the jar. Database is created on the fly, with some data.
 
 The database schema is the "classicmodels" sample database from mysqltutorial:
 http://www.mysqltutorial.org/mysql-sample-database.aspx

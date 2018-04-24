@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS `classicmodels`;
+--CREATE DATABASE `classicmodels`;
 
-USE classicmodels;
+--USE classicmodels;
 
 CREATE TABLE IF NOT EXISTS `offices` (
   `officeCode` varchar(10) NOT NULL,
